@@ -1,12 +1,14 @@
-output "rds_hostname" {
-  description = "RDS instance hostname"
-  value       = aws_db_instance.test.address
-  #   sensitive   = true
+# output "rds_hostname" {
+#   description = "ARN of the bucket"
+#   value       = module.mySQL-db.hostname
+# }
+
+# output "rds_endpoint" {
+#   description = "Name (id) of the bucket"
+#   value       = module.mySQL-db.endpoint
+# }
+
+output "aws_ecr_repository_url" {
+  value = aws_ecr_repository.main.repository_url
 }
 
-
-output "rds_endpoint" {
-  description = "RDS instance hostname"
-  value       = aws_db_instance.test.endpoint
-  #   sensitive   = true
-}
