@@ -3,5 +3,5 @@ output "alb" {
 }
 
 output "ecs_tasks" {
-  value = aws_security_group.ecs_tasks.id
+  value = aws_security_group.ecs_task.id
 }

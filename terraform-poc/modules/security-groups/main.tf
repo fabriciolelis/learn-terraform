@@ -32,7 +32,7 @@ resource "aws_security_group" "alb" {
 
 resource "aws_security_group" "ecs_task" {
   name   = "${var.name}-sg-task-${var.environment}"
-  vpc_id = aws_vpc.main.id
+  vpc_id = var.vpc_id
 
   ingress {
     protocol         = "tcp"
