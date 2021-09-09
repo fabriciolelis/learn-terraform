@@ -38,30 +38,21 @@ resource "aws_iam_role" "ecs_task_role" {
 EOF
 }
 
-resource "aws_iam_policy" "dynamodb" {
-  name        = "${var.name}-task-policy-dynamodb"
-  description = "Policy that allows access to DynamoDB"
+resource "aws_iam_policy" "secrets" {
+  name        = "${var.name}-task-policy-secrets"
+  description = "Policy that allows access to the secrets we created"
 
   policy = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "AccessSecrets",
             "Effect": "Allow",
             "Action": [
-                "dynamodb:CreateTable",
-                "dynamodb:UpdateTimeToLive",
-                "dynamodb:PutItem",
-                "dynamodb:DescribeTable",
-                "dynamodb:ListTables",
-                "dynamodb:DeleteItem",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:Query",
-                "dynamodb:UpdateItem",
-                "dynamodb:UpdateTable"
+              "secretsmanager:GetSecretValue"
             ],
-            "Resource": "*"
+            "Resource": ${jsonencode(var.container_secrets_arns)}
         }
     ]
 }
@@ -73,9 +64,9 @@ resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attach
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "ecs-task-role-policy-attachment" {
-  role       = aws_iam_role.ecs_task_role.name
-  policy_arn = aws_iam_policy.dynamodb.arn
+resource "aws_iam_role_policy_attachment" "ecs-task-role-policy-attachment-for-secrets" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.secrets.arn
 }
 
 resource "aws_ecs_cluster" "main" {
@@ -91,10 +82,10 @@ resource "aws_ecs_task_definition" "main" {
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   container_definitions = jsonencode([{
-    name      = "${var.name}-container-${var.environment}"
-    image     = var.aws_ecr_repository_url
+    name        = "${var.name}-container-${var.environment}"
+    image       = var.aws_ecr_repository_url
     environment = var.container_environment
-    essential = true
+    essential   = true
     portMappings = [{
       protocol      = "tcp"
       containerPort = var.container_port

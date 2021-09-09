@@ -39,22 +39,22 @@ variable "service_desired_count" {
 
 variable "container_port" {
   description = "The port where the Docker is exposed"
-  default     = 8000
+  default     = 80
 }
 
 variable "container_cpu" {
   description = "The number of cpu units used by the task"
-  default     = 256
+  default     = 512
 }
 
 variable "container_memory" {
   description = "The amount (in MiB) of memory used by the task"
-  default     = 512
+  default     = 2048
 }
 
 variable "health_check_path" {
   description = "Http path for task health check"
-  default     = "/"
+  default     = "/api/authenticate"
 }
 
 variable "tsl_certificate_arn" {

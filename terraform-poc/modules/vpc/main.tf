@@ -1,12 +1,15 @@
 resource "aws_vpc" "main" {
   cidr_block = var.cidr
   tags = {
-    "Name" = "main"
+    "Name" = "${var.name}-vpc${var.environment}"
   }
 }
 
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
+  tags = {
+    "Name" = "${var.name}-internet-gtw${var.environment}"
+  }
 }
 
 resource "aws_subnet" "private" {
@@ -71,3 +74,5 @@ resource "aws_route_table_association" "private" {
   subnet_id      = element(aws_subnet.private.*.id, count.index)
   route_table_id = element(aws_route_table.private.*.id, count.index)
 }
+
+

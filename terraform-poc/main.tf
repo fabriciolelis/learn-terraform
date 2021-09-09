@@ -38,6 +38,14 @@ module "alb" {
   health_check_path   = var.health_check_path
 }
 
+module "mySQL-rds" {
+  source              = "./modules/RDS"
+  name                = var.name
+  environment         = var.environment
+  subnets             = module.vpc.private_subnets
+  rds_security_groups = [module.security_groups.rds_sg]
+}
+
 module "ecs" {
   source                      = "./modules/ecs"
   name                        = var.name
@@ -45,97 +53,97 @@ module "ecs" {
   region                      = var.region
   subnets                     = module.vpc.private_subnets
   aws_alb_target_group_arn    = module.alb.aws_alb_target_group_arn
-  ecs_service_security_groups = [module.security_groups.ecs_tasks]
+  ecs_service_security_groups = [module.security_groups.ecs_tasks, module.security_groups.db_access_sg]
   container_port              = var.container_port
   container_cpu               = var.container_cpu
   container_memory            = var.container_memory
   service_desired_count       = var.service_desired_count
   container_environment = [
-    { name = "AWS_BUCKET_NAME",
-    value = "scanecosystem-files" },
-    { name = "AWS_CLOUD_WATCH_STREAM",
-    value = "scanecosystem-cloudwatch-logs" },
+    { name  = "AWS_BUCKET_NAME",
+      value = "scanecosystem-files"
+    },
+    { name  = "AWS_CLOUD_WATCH_STREAM",
+      value = "scanecosystem-cloudwatch-logs"
+    },
     {
-      name = "ADMIN_DOMAIN_NAME",
+      name  = "ADMIN_DOMAIN_NAME",
       value = "admin.virtus-scan-ecosystem.com"
     },
     {
-      name = "XMPP_HOST",
+      name  = "XMPP_HOST",
       value = "ejabberd.virtus-scan-ecosystem.com"
     },
     {
-      name = "XMPP_PORT",
+      name  = "XMPP_PORT",
       value = "5222"
     },
     {
-      name = "XMPP_DOMAIN",
+      name  = "XMPP_DOMAIN",
       value = "ejabberd.virtus-scan-ecosystem.com"
     },
     {
-      name = "AWS_REGION",
+      name  = "AWS_REGION",
       value = "us-east-2"
     },
     {
-      name = "TOKEN_VALIDITY_SECONDS",
+      name  = "TOKEN_VALIDITY_SECONDS",
       value = "86400"
     },
     {
-     name = "TOKEN_REMEBER_SECONDS",
-     value = "86400"
+      name  = "TOKEN_REMEBER_SECONDS",
+      value = "86400"
+    },
+    {
+      name  = "DATABASE_URL",
+      value = module.mySQL-rds.hostname
+    },
+    {
+      name  = "DATABASE_NAME",
+      value = module.mySQL-rds.database-name
     }
   ]
-  # container_secrets      = module.secrets.secrets_map
+  container_secrets = [
+    {
+      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd:username::",
+      "name" : "XMPP_USERNAME"
+    },
+    {
+      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd:password::",
+      "name" : "XMPP_PASSWORD"
+    },
+    {
+      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz:password::",
+      "name" : "EMAIL_PASSWORD"
+    },
+    {
+      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz:username::",
+      "name" : "EMAIL_USERNAME"
+    },
+    {
+      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW:awsAccessKeyId::",
+      "name" : "AWS_ACCESS_KEY_ID"
+    },
+    {
+      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW:awsSecretKey::",
+      "name" : "AWS_SECRET_KEY"
+    },
+    {
+      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c:username::",
+      "name" : "DATABASE_USERNAME"
+    },
+    {
+      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c:password::",
+      "name" : "DATABASE_PASSWORD"
+    }
+  ]
   aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
-  # container_secrets_arns = module.secrets.application_secrets_arn
+  container_secrets_arns = ["arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c",
+    "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW",
+    "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz",
+    "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd"
+  ]
+  depends_on = [
+    module.mySQL-rds
+  ]
 }
 
-# module "mySQL-db" {
-#   source = "./modules/RDS"
-# }
-
-
-
-# module "db" {
-#   source  = "terraform-aws-modules/rds/aws"
-#   version = "~> 3.0"
-
-#   identifier = "testdb"
-
-#   engine            = "mysql"
-#   engine_version    = "8.0.23"
-#   instance_class    = "db.m5.large"
-#   allocated_storage = 20
-
-#   name     = "testdb"
-#   username = "user"
-#   password = "YourPwdShouldBeLongAndSecure!"
-#   port     = "3306"
-
-#   vpc_security_group_ids = ["sg-12345678"]
-
-#   maintenance_window = "Mon:00:00-Mon:03:00"
-#   backup_window      = "03:00-06:00"
-
-#   # Enhanced Monitoring - see example for details on how to create the role
-#   # by yourself, in case you don't want to create it automatically
-#   monitoring_interval    = "30"
-#   monitoring_role_name   = "MyRDSMonitoringRole"
-#   create_monitoring_role = true
-
-#   tags = {
-#     Owner       = "user"
-#     Environment = "dev"
-#   }
-
-#   # DB subnet group
-#   subnet_ids = ["subnet-12345678", "subnet-87654321"]
-
-#   # DB parameter group
-#   family = "mysql8.0"
-
-#   # DB option group
-#   major_engine_version = "8.0"
-
-#   # Database Deletion Protection
-#   deletion_protection = false
-# }
