@@ -13,6 +13,11 @@ resource "aws_alb_target_group" "main" {
     path                = var.health_check_path
     unhealthy_threshold = "5"
   }
+
+  tags = {
+    Name        = "${var.name}-tg-${var.environment}"
+    Environment = var.environment
+  }
 }
 
 resource "aws_lb" "main" {
@@ -23,6 +28,11 @@ resource "aws_lb" "main" {
   subnets            = var.subnets.*.id
 
   enable_deletion_protection = false
+
+  tags = {
+    Name        = "${var.name}-alb-${var.environment}"
+    Environment = var.environment
+  }
 }
 
 
@@ -53,5 +63,17 @@ resource "aws_alb_listener" "https" {
   default_action {
     target_group_arn = aws_alb_target_group.main.id
     type             = "forward"
+  }
+}
+
+resource "aws_route53_record" "test" {
+  zone_id = "Z02482001VOV03ZD0ZJTJ"
+  name    = "mytest.virtus-scan-ecosystem.com"
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.main.dns_name
+    zone_id                = aws_lb.main.zone_id
+    evaluate_target_health = true
   }
 }

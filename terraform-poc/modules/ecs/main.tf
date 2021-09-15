@@ -73,12 +73,21 @@ resource "aws_ecs_cluster" "main" {
   name = "${var.name}-cluster-${var.environment}"
 }
 
+resource "aws_cloudwatch_log_group" "main" {
+  name = "/ecs/${var.name}-task-${var.environment}"
+
+  tags = {
+    Name        = "${var.name}-task-${var.environment}"
+    Environment = var.environment
+  }
+}
+
 resource "aws_ecs_task_definition" "main" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   family                   = "${var.name}-task-${var.environment}"
-  cpu                      = 256
-  memory                   = 512
+  cpu                      = var.container_cpu
+  memory                   = var.container_memory
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   container_definitions = jsonencode([{
@@ -91,6 +100,15 @@ resource "aws_ecs_task_definition" "main" {
       containerPort = var.container_port
       hostPort      = var.container_port
     }]
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        awslogs-group         = aws_cloudwatch_log_group.main.name
+        awslogs-stream-prefix = "ecs"
+        awslogs-region        = var.region
+      }
+    }
+    secrets = var.container_secrets
   }])
 }
 
@@ -98,7 +116,7 @@ resource "aws_ecs_service" "main" {
   name                               = "${var.name}-service-${var.environment}"
   cluster                            = aws_ecs_cluster.main.id
   task_definition                    = aws_ecs_task_definition.main.arn
-  desired_count                      = 2
+  desired_count                      = var.service_desired_count
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent         = 200
   launch_type                        = "FARGATE"

@@ -34,7 +34,7 @@ variable "public_subnets" {
 
 variable "service_desired_count" {
   description = "Number of tasks running in parallel"
-  default     = 2
+  default     = 1
 }
 
 variable "container_port" {
@@ -54,7 +54,7 @@ variable "container_memory" {
 
 variable "health_check_path" {
   description = "Http path for task health check"
-  default     = "/api/authenticate"
+  default     = "/"
 }
 
 variable "tsl_certificate_arn" {

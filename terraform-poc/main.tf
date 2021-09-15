@@ -104,36 +104,36 @@ module "ecs" {
   ]
   container_secrets = [
     {
-      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd:username::",
-      "name" : "XMPP_USERNAME"
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd:username::",
+      name      = "XMPP_USERNAME"
     },
     {
-      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd:password::",
-      "name" : "XMPP_PASSWORD"
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd:password::",
+      name      = "XMPP_PASSWORD"
     },
     {
-      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz:password::",
-      "name" : "EMAIL_PASSWORD"
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz:password::",
+      name      = "EMAIL_PASSWORD"
     },
     {
-      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz:username::",
-      "name" : "EMAIL_USERNAME"
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz:username::",
+      name      = "EMAIL_USERNAME"
     },
     {
-      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW:awsAccessKeyId::",
-      "name" : "AWS_ACCESS_KEY_ID"
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW:awsAccessKeyId::",
+      name      = "AWS_ACCESS_KEY_ID"
     },
     {
-      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW:awsSecretKey::",
-      "name" : "AWS_SECRET_KEY"
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW:awsSecretKey::",
+      name      = "AWS_SECRET_KEY"
     },
     {
-      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c:username::",
-      "name" : "DATABASE_USERNAME"
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c:username::",
+      name      = "DATABASE_USERNAME"
     },
     {
-      "valueFrom" : "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c:password::",
-      "name" : "DATABASE_PASSWORD"
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c:password::",
+      name      = "DATABASE_PASSWORD"
     }
   ]
   aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
