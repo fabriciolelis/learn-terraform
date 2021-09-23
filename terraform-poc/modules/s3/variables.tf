@@ -5,5 +5,5 @@ variable "www_domain_name" {
 
 // We'll also need the root domain (also known as zone apex or naked domain).
 variable "root_domain_name" {
-  default = "terraform-scan-ecosystem.com"
+  default = "terraform-virtus-scan-ecosystem.com"
 }

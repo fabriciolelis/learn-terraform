@@ -1,2 +1,4 @@
 s3-bucket-static-site/.terraform/providers/registry.terraform.io/hashicorp/aws/3.58.0/linux_amd64/terraform-provider-aws_v3.58.0_x5
 s3-bucket-static-site/.terraform.lock.hcl
+s3-bucket-static-site/terraform.tfstate.backup
+s3-bucket-static-site/.terraform.tfstate.lock.info

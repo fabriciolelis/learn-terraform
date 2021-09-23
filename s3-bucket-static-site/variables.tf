@@ -4,7 +4,7 @@ variable "domain_name" {
 }
 
 variable "bucket_name" {
-  default = "terraform-test-virtus"
+  default = "terraform.virtus-scan-ecosystem.com"
 }
 
 // We'll also need the root domain (also known as zone apex or naked domain).
@@ -13,7 +13,7 @@ variable "root_domain_name" {
 }
 
 variable "region" {
-  default     = "us-east-2"
+  default     = "us-east-1"
   description = "AWS region"
 }
 
