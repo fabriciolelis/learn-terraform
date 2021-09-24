@@ -61,3 +61,29 @@ variable "tsl_certificate_arn" {
   description = "The ARN of the certificate that the ALB uses for https"
   default     = "arn:aws:acm:us-east-2:534327908844:certificate/9d961a18-55c0-4230-ba64-9504d902c9c3"
 }
+
+variable "cloudfront_certificate_arn" {
+  description = "Thr ARN of certificate that the Cloudfront uses for https. It is necessary a certificate in us-east-1"
+  default = "arn:aws:acm:us-east-1:534327908844:certificate/1644962e-749d-4a71-8081-f1c1c41f56a1"
+}
+
+variable "domain_name" {
+  default = "terraform.virtus-scan-ecosystem.com"
+}
+
+variable "bucket_name" {
+  default = "terraform.virtus-scan-ecosystem.com"
+}
+
+// We'll also need the root domain (also known as zone apex or naked domain).
+variable "root_domain_name" {
+  default = "virtus-scan-ecosystem.com"
+}
+
+variable "zone_id" {
+  default = "Z02482001VOV03ZD0ZJTJ"
+}
+
+variable "alb_domain_name" {
+  default = "mytest.virtus-scan-ecosystem.com"
+}

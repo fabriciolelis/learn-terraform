@@ -36,6 +36,8 @@ module "alb" {
   alb_security_groups = [module.security_groups.alb]
   alb_tls_cert_arn    = var.tsl_certificate_arn
   health_check_path   = var.health_check_path
+  zone_id = var.zone_id
+  alb_domain_name = var.alb_domain_name
 }
 
 module "mySQL-rds" {
@@ -44,6 +46,15 @@ module "mySQL-rds" {
   environment         = var.environment
   subnets             = module.vpc.private_subnets
   rds_security_groups = [module.security_groups.rds_sg]
+}
+
+module "s3-static-site" {
+  source = "./modules/s3"
+  domain_name = var.domain_name
+  bucket_name = var.bucket_name
+  root_domain_name = var.root_domain_name
+  cloudfront_certificate = var.cloudfront_certificate_arn
+  zone_id = var.zone_id
 }
 
 module "ecs" {
@@ -64,10 +75,6 @@ module "ecs" {
     },
     { name  = "AWS_CLOUD_WATCH_STREAM",
       value = "scanecosystem-cloudwatch-logs"
-    },
-    {
-      name  = "ADMIN_DOMAIN_NAME",
-      value = "admin.virtus-scan-ecosystem.com"
     },
     {
       name  = "XMPP_HOST",
