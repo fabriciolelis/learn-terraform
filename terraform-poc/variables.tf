@@ -61,3 +61,30 @@ variable "tsl_certificate_arn" {
   description = "The ARN of the certificate that the ALB uses for https"
   default     = "arn:aws:acm:us-east-2:534327908844:certificate/9d961a18-55c0-4230-ba64-9504d902c9c3"
 }
+
+# Use the only one certificate if the region of application deployment is us-east-1. Because Cloudfront only accepts certificates 
+# at us-east-1
+variable "tsl_certificatecloudfront" {
+  description = "The ARN of the certificate that the Cloudfront uses."
+  default     = "arn:aws:acm:us-east-1:534327908844:certificate/1644962e-749d-4a71-8081-f1c1c41f56a1"
+}
+
+variable "domain_name" {
+  default = "terraform.virtus-scan-ecosystem.com"
+}
+
+variable "bucket_name" {
+  default = "terraform.virtus-scan-ecosystem.com"
+}
+
+variable "mobile_front_domain" {
+  default = "terraform.virtus-scan-ecosystem.com"
+}
+
+variable "mobile_front_bucket" {
+  default = "terraform.virtus-scan-ecosystem.com"
+}
+
+variable "zone_id" {
+  default = "Z02482001VOV03ZD0ZJTJ"
+}

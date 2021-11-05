@@ -1,9 +1,15 @@
-// Create a variable for our domain name because we'll be using it a lot.
-variable "www_domain_name" {
-  default = "www.terraform-scan-ecosystem.com"
+variable "domain_name" {
+  description = "Domain name"
 }
 
-// We'll also need the root domain (also known as zone apex or naked domain).
-variable "root_domain_name" {
-  default = "terraform-virtus-scan-ecosystem.com"
+variable "bucket_name" {
+  description = "Bucket name"
+}
+
+variable "zone_id" {
+  description = "Zone ID"
+}
+
+variable "tsl_certificate_arn" {
+  description = "The ARN of the certificate that the ALB uses for https"
 }

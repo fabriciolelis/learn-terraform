@@ -18,6 +18,38 @@ resource "aws_security_group" "alb" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  ingress {
+    protocol         = "tcp"
+    from_port        = 5443
+    to_port          = 5443
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    protocol         = "tcp"
+    from_port        = 5280
+    to_port          = 5280
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    protocol         = "tcp"
+    from_port        = 5269
+    to_port          = 5269
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    protocol         = "tcp"
+    from_port        = 5222
+    to_port          = 5222
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
   egress {
     protocol         = "-1"
     from_port        = 0
@@ -26,7 +58,8 @@ resource "aws_security_group" "alb" {
     ipv6_cidr_blocks = ["::/0"]
   }
   tags = {
-    "Name" = "alb-security-group"
+    "Name"        = "${var.name}-alb-security-group"
+    "Environment" = "${var.environment}"
   }
 }
 
@@ -38,6 +71,38 @@ resource "aws_security_group" "ecs_task" {
     protocol         = "tcp"
     from_port        = var.container_port
     to_port          = var.container_port
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    protocol         = "tcp"
+    from_port        = 5443
+    to_port          = 5443
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    protocol         = "tcp"
+    from_port        = 5280
+    to_port          = 5280
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    protocol         = "tcp"
+    from_port        = 5269
+    to_port          = 5269
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    protocol         = "tcp"
+    from_port        = 5222
+    to_port          = 5222
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
@@ -86,5 +151,10 @@ resource "aws_security_group" "rds_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    "Name"        = "${var.name}-rds-sg"
+    "Environment" = "${var.environment}"
   }
 }

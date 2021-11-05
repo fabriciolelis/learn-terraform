@@ -25,3 +25,7 @@ variable "alb_tls_cert_arn" {
 variable "health_check_path" {
   description = "Path to check if the service is healthy, e.g. \"/status\""
 }
+
+variable "zone_id" {
+  description = "Zone ID"
+}

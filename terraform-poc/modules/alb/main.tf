@@ -67,7 +67,7 @@ resource "aws_alb_listener" "https" {
 }
 
 resource "aws_route53_record" "test" {
-  zone_id = "Z02482001VOV03ZD0ZJTJ"
+  zone_id = var.zone_id
   name    = "mytest.virtus-scan-ecosystem.com"
   type    = "A"
 

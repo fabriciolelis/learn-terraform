@@ -32,10 +32,28 @@ module "alb" {
   name                = var.name
   vpc_id              = module.vpc.id
   subnets             = module.vpc.public_subnets
+  zone_id             = var.zone_id
   environment         = var.environment
   alb_security_groups = [module.security_groups.alb]
   alb_tls_cert_arn    = var.tsl_certificate_arn
   health_check_path   = var.health_check_path
+}
+
+
+module "s3-admin-front" {
+  source              = "./modules/s3"
+  zone_id             = var.zone_id
+  bucket_name         = var.bucket_name
+  domain_name         = var.domain_name
+  tsl_certificate_arn = var.tsl_certificatecloudfront
+}
+
+module "s3-mobile-front" {
+  source              = "./modules/s3"
+  zone_id             = var.zone_id
+  bucket_name         = var.bucket_name
+  domain_name         = var.domain_name
+  tsl_certificate_arn = var.tsl_certificatecloudfront
 }
 
 module "mySQL-rds" {
@@ -64,10 +82,6 @@ module "ecs" {
     },
     { name  = "AWS_CLOUD_WATCH_STREAM",
       value = "scanecosystem-cloudwatch-logs"
-    },
-    {
-      name  = "ADMIN_DOMAIN_NAME",
-      value = "admin.virtus-scan-ecosystem.com"
     },
     {
       name  = "XMPP_HOST",
