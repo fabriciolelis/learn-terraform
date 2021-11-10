@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "root_bucket" {
-  bucket = var.domain_name
+  bucket = "${var.bucket_name}-${var.environment}-${var.name}"
   acl    = "public-read"
   policy = <<POLICY
 {
@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "root_bucket" {
       "Effect":"Allow",
       "Principal": "*",
       "Action":["s3:GetObject"],
-      "Resource":["arn:aws:s3:::${var.domain_name}/*"]
+      "Resource":["arn:aws:s3:::${var.bucket_name}-${var.environment}-${var.name}/*"]
     }
   ]
 }
@@ -26,7 +26,7 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
 
   origin {
     domain_name = aws_s3_bucket.root_bucket.website_endpoint
-    origin_id   = "S3-.${var.bucket_name}"
+    origin_id   = "S3-.${var.bucket_name}-${var.environment}-${var.name}"
     custom_origin_config {
       http_port              = 80
       https_port             = 443
@@ -39,7 +39,7 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
   is_ipv6_enabled     = true
   default_root_object = "index.html"
 
-  aliases = [var.domain_name]
+  aliases = ["${var.domain_name}-${var.environment}.${var.subdomain_name}"]
 
   custom_error_response {
     error_caching_min_ttl = 0
@@ -51,7 +51,7 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-.${var.bucket_name}"
+    target_origin_id = "S3-.${var.bucket_name}-${var.environment}-${var.name}"
 
     forwarded_values {
       query_string = false
@@ -61,7 +61,7 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
       }
     }
 
-    viewer_protocol_policy = "allow-all"
+    viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 86400
     max_ttl                = 31536000
@@ -82,7 +82,7 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
 
 resource "aws_route53_record" "root-a" {
   zone_id = var.zone_id
-  name    = var.domain_name
+  name    = "${var.domain_name}-${var.environment}.${var.subdomain_name}"
   type    = "A"
 
   alias {

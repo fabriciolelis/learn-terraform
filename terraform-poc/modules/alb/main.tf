@@ -68,7 +68,7 @@ resource "aws_alb_listener" "https" {
 
 resource "aws_route53_record" "test" {
   zone_id = var.zone_id
-  name    = "mytest.virtus-scan-ecosystem.com"
+  name    = "epsoncloud-${var.environment}.${var.subdomain_name}"
   type    = "A"
 
   alias {

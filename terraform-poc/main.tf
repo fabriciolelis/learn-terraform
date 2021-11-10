@@ -34,6 +34,7 @@ module "alb" {
   subnets             = module.vpc.public_subnets
   zone_id             = var.zone_id
   environment         = var.environment
+  subdomain_name      = var.subdomain_name
   alb_security_groups = [module.security_groups.alb]
   alb_tls_cert_arn    = var.tsl_certificate_arn
   health_check_path   = var.health_check_path
@@ -45,19 +46,25 @@ module "s3-admin-front" {
   zone_id             = var.zone_id
   bucket_name         = var.bucket_name
   domain_name         = var.domain_name
+  name                = var.name
+  environment         = var.environment
+  subdomain_name      = var.subdomain_name
   tsl_certificate_arn = var.tsl_certificatecloudfront
 }
 
-module "s3-mobile-front" {
-  source              = "./modules/s3"
-  zone_id             = var.zone_id
-  bucket_name         = var.bucket_name
-  domain_name         = var.domain_name
-  tsl_certificate_arn = var.tsl_certificatecloudfront
-}
+# module "s3-mobile-front" {
+#   source              = "./modules/s3"
+#   zone_id             = var.zone_id
+#   bucket_name         = var.bucket_name
+#   domain_name         = var.domain_name
+#   name                = var.name
+#   environment         = var.environment
+#   subdomain_name      = var.subdomain_name
+#   tsl_certificate_arn = var.tsl_certificatecloudfront
+# }
 
 module "mySQL-rds" {
-  source              = "./modules/RDS"
+  source              = "./modules/rds"
   name                = var.name
   environment         = var.environment
   subnets             = module.vpc.private_subnets
@@ -116,46 +123,9 @@ module "ecs" {
       value = module.mySQL-rds.database-name
     }
   ]
-  container_secrets = [
-    {
-      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd:username::",
-      name      = "XMPP_USERNAME"
-    },
-    {
-      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd:password::",
-      name      = "XMPP_PASSWORD"
-    },
-    {
-      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz:password::",
-      name      = "EMAIL_PASSWORD"
-    },
-    {
-      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz:username::",
-      name      = "EMAIL_USERNAME"
-    },
-    {
-      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW:awsAccessKeyId::",
-      name      = "AWS_ACCESS_KEY_ID"
-    },
-    {
-      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW:awsSecretKey::",
-      name      = "AWS_SECRET_KEY"
-    },
-    {
-      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c:username::",
-      name      = "DATABASE_USERNAME"
-    },
-    {
-      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c:password::",
-      name      = "DATABASE_PASSWORD"
-    }
-  ]
+  container_secrets      = var.container_secrets
   aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
-  container_secrets_arns = ["arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c",
-    "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW",
-    "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz",
-    "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd"
-  ]
+  container_secrets_arns = var.secrets_arn
   depends_on = [
     module.mySQL-rds
   ]

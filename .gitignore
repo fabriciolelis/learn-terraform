@@ -2,3 +2,14 @@ s3-bucket-static-site/.terraform/providers/registry.terraform.io/hashicorp/aws/3
 s3-bucket-static-site/.terraform.lock.hcl
 s3-bucket-static-site/terraform.tfstate.backup
 s3-bucket-static-site/.terraform.tfstate.lock.info
+terraform-poc/terraform.tfstate
+*/terraform.tfstate
+terraform-poc/.terraform/providers/registry.terraform.io/hashicorp/aws/3.56.0/linux_amd64/terraform-provider-aws_v3.56.0_x5
+terraform-poc/terraform.tfstate.backup
+terraform-poc/.terraform/modules/modules.json
+
+
+s3-bucket-static-site/terraform.tfstate
+terraform-poc/.terraform/environment
+terraform-poc/.terraform/terraform.tfstate
+s3-bucket-static-site/terraform.tfstate

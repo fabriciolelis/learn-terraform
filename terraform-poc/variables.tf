@@ -88,3 +88,56 @@ variable "mobile_front_bucket" {
 variable "zone_id" {
   default = "Z02482001VOV03ZD0ZJTJ"
 }
+
+variable "container_secrets" {
+  default = [
+    {
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd:username::",
+      name      = "XMPP_USERNAME"
+    },
+    {
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd:password::",
+      name      = "XMPP_PASSWORD"
+    },
+    {
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz:password::",
+      name      = "EMAIL_PASSWORD"
+    },
+    {
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz:username::",
+      name      = "EMAIL_USERNAME"
+    },
+    {
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW:awsAccessKeyId::",
+      name      = "AWS_ACCESS_KEY_ID"
+    },
+    {
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW:awsSecretKey::",
+      name      = "AWS_SECRET_KEY"
+    },
+    {
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c:username::",
+      name      = "DATABASE_USERNAME"
+    },
+    {
+      valueFrom = "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c:password::",
+      name      = "DATABASE_PASSWORD"
+    }
+  ]
+}
+
+variable "secrets_arn" {
+  default = ["arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c",
+    "arn:aws:secretsmanager:us-east-2:534327908844:secret:AWSSecretTest-sLdRcW",
+    "arn:aws:secretsmanager:us-east-2:534327908844:secret:SESSecretTest-rYqcnz",
+    "arn:aws:secretsmanager:us-east-2:534327908844:secret:XMPPSecretTest-ureepd"
+  ]
+}
+
+variable "database_secret_arn" {
+  default = "arn:aws:secretsmanager:us-east-2:534327908844:secret:Tf-test-secrets-wOPH4c"
+}
+
+variable "subdomain_name" {
+  default = "virtus.com"
+}

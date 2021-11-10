@@ -1,6 +1,9 @@
-data "aws_secretsmanager_secret_version" "mysecret" {
-  secret_id = "Tf-test-secrets"
+data "aws_secretsmanager_secret" "secrets" {
+  arn = "arn:aws:secretsmanager:us-west-2:534327908844:secret:Database-Secrets-9emXJb"
+}
 
+data "aws_secretsmanager_secret_version" "mysecret" {
+  secret_id = data.aws_secretsmanager_secret.secrets.id
 }
 
 locals {
@@ -19,7 +22,7 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 }
 
 resource "aws_db_parameter_group" "main" {
-  name   = "main"
+  name   = "${var.name}-db-parameter-group-${var.environment}"
   family = "mysql8.0"
 
   parameter {

@@ -29,3 +29,7 @@ variable "health_check_path" {
 variable "zone_id" {
   description = "Zone ID"
 }
+
+variable "subdomain_name" {
+  description = "subdomain name from hosted zone"
+}
